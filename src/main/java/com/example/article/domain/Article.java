@@ -34,6 +34,10 @@ public class Article {
     }
 
     public Article update(ArticleDto.UpdateArticleRequest request, ClockHolder clockHolder) {
+        if (!this.username.equals(request.getUsename())) {
+            throw new IllegalArgumentException();
+        }
+
         return new Builder()
                 .id(this.id)
                 .subject(request.getSubject())
