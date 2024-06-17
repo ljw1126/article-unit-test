@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
+import static com.example.article.adaptor.port.in.dto.ArticleDto.UpdateArticleRequest;
+
 class ArticleTest {
 
     @Test
@@ -38,8 +40,10 @@ class ArticleTest {
                 .createdAt(createdAt)
                 .build();
 
+        UpdateArticleRequest request = new UpdateArticleRequest(1L, "updated subject", "updated content", "tester");
+
         LocalDateTime modifiedAt = LocalDateTime.now();
-        Article updated = article.update("updated subject", "updated content", modifiedAt);
+        Article updated = article.update(request, modifiedAt);
 
         BDDAssertions.then(updated)
                 .isNotNull()
