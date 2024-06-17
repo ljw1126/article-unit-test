@@ -6,7 +6,6 @@ import com.example.article.domain.Article;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -38,8 +37,7 @@ public class FakeArticlePersistenceAdaptor implements CommandArticlePort, QueryA
 
     @Override
     public void delete(Long articleId) {
-        Article article = getById(articleId).orElseThrow(NoSuchElementException::new);
-        data.remove(article);
+        data.removeIf(item -> item.getId().equals(articleId));
     }
 
     @Override
