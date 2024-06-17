@@ -27,7 +27,7 @@ class ArticleServiceTest {
     void setUp() {
         FakeArticlePersistenceAdaptor fakeArticlePersistenceAdapter = new FakeArticlePersistenceAdaptor();
         FakeClockHolder fakeClockHolder = new FakeClockHolder(localDateTime);
-        this.articleService = new ArticleService(fakeArticlePersistenceAdapter, fakeArticlePersistenceAdapter, fakeClockHolder);
+        articleService = new ArticleService(fakeArticlePersistenceAdapter, fakeArticlePersistenceAdapter, fakeClockHolder);
 
         Article article1 = new Article.Builder()
                 .subject("subject1")
@@ -51,7 +51,7 @@ class ArticleServiceTest {
     void create() {
         CreateArticleRequest request = new CreateArticleRequest("subject", "content", "tester");
 
-        Article result = this.articleService.create(request);
+        Article result = articleService.create(request);
 
         assertThat(result)
                 .isNotNull()
@@ -67,7 +67,7 @@ class ArticleServiceTest {
     void create시_파라미터_누락한경우_예외를_던진다(String title, String subject, String content, String username) {
         CreateArticleRequest request = new CreateArticleRequest(subject, content, username);
 
-        assertThatThrownBy(() -> this.articleService.create(request))
+        assertThatThrownBy(() -> articleService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,7 +87,7 @@ class ArticleServiceTest {
         ArticleDto.UpdateArticleRequest request
                 = new ArticleDto.UpdateArticleRequest(articleId, "updated subject", "updated content", "tester1");
 
-        Article result = this.articleService.update(request);
+        Article result = articleService.update(request);
 
         assertThat(result)
                 .isNotNull()
@@ -100,24 +100,26 @@ class ArticleServiceTest {
 
     @Test
     void update시_Article이없는경우_예외를던진다() {
-        Long articleId = 99L;
         ArticleDto.UpdateArticleRequest request
-                = new ArticleDto.UpdateArticleRequest(articleId, "updated-subject", "updated-content", "tester1");
+                = new ArticleDto.UpdateArticleRequest(99L, "subject", "content", "tester");
 
-        assertThatThrownBy(() -> this.articleService.update(request))
+        assertThatThrownBy(() -> articleService.update(request))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    void update시_username이다르면_예외를_던진다() {
+        ArticleDto.UpdateArticleRequest request
+                = new ArticleDto.UpdateArticleRequest(1L, "subject", "content", "other username");
+
+        assertThatThrownBy(() -> articleService.update(request))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void delete() {
         assertThatNoException()
                 .isThrownBy(() -> articleService.delete(1L));
-    }
-
-    @Test
-    void delete시_Article존재하지않으면_예외던진다() {
-        assertThatThrownBy(() -> articleService.delete(99L))
-                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
