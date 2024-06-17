@@ -1,5 +1,7 @@
 package com.example.article.domain;
 
+import com.example.article.adaptor.port.in.dto.ArticleDto;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -21,15 +23,28 @@ public class Article {
         this.modifiedAt = modifiedAt;
     }
 
-    public Article update(String subject, String content, LocalDateTime modifiedAt) {
+    public static Article from(ArticleDto.CreateArticleRequest request, LocalDateTime createdAt) {
+        return new Builder()
+                .subject(request.getSubject())
+                .content(request.getContent())
+                .username(request.getUsername())
+                .createdAt(createdAt)
+                .build();
+    }
+
+    public Article update(ArticleDto.UpdateArticleRequest request, LocalDateTime modifiedAt) {
         return new Builder()
                 .id(this.id)
-                .subject(subject)
-                .content(content)
+                .subject(request.getSubject())
+                .content(request.getContent())
                 .username(this.username)
                 .createdAt(this.createdAt)
                 .modifiedAt(modifiedAt)
                 .build();
+    }
+
+    public boolean verify(Article article) {
+        return this.id.equals(article.getId()) && this.username.equals(article.getUsername());
     }
 
     public static class Builder {
