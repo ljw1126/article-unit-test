@@ -12,7 +12,7 @@ class ArticleTest {
     @Test
     void Article_생성한다() {
         LocalDateTime createdAt = LocalDateTime.now();
-        var article = new Article.Builder()
+        Article article = new Article.Builder()
                 .id(1L)
                 .subject("subject")
                 .content("content")
@@ -32,7 +32,7 @@ class ArticleTest {
     @Test
     void Article_수정한다() {
         LocalDateTime createdAt = LocalDateTime.now();
-        var article = new Article.Builder()
+        Article article = new Article.Builder()
                 .id(1L)
                 .subject("subject")
                 .content("content")
@@ -43,7 +43,7 @@ class ArticleTest {
         UpdateArticleRequest request = new UpdateArticleRequest(1L, "updated subject", "updated content", "tester");
 
         LocalDateTime modifiedAt = LocalDateTime.now();
-        Article updated = article.update(request, modifiedAt);
+        Article updated = article.update(request, () -> modifiedAt);
 
         BDDAssertions.then(updated)
                 .isNotNull()

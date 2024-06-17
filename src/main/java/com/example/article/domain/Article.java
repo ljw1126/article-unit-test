@@ -1,6 +1,7 @@
 package com.example.article.domain;
 
 import com.example.article.adaptor.port.in.dto.ArticleDto;
+import com.example.common.service.port.ClockHolder;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -23,23 +24,23 @@ public class Article {
         this.modifiedAt = modifiedAt;
     }
 
-    public static Article from(ArticleDto.CreateArticleRequest request, LocalDateTime createdAt) {
+    public static Article from(ArticleDto.CreateArticleRequest request, ClockHolder clockHolder) {
         return new Builder()
                 .subject(request.getSubject())
                 .content(request.getContent())
                 .username(request.getUsername())
-                .createdAt(createdAt)
+                .createdAt(clockHolder.current())
                 .build();
     }
 
-    public Article update(ArticleDto.UpdateArticleRequest request, LocalDateTime modifiedAt) {
+    public Article update(ArticleDto.UpdateArticleRequest request, ClockHolder clockHolder) {
         return new Builder()
                 .id(this.id)
                 .subject(request.getSubject())
                 .content(request.getContent())
                 .username(this.username)
                 .createdAt(this.createdAt)
-                .modifiedAt(modifiedAt)
+                .modifiedAt(clockHolder.current())
                 .build();
     }
 

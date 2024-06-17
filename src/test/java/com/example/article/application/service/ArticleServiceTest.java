@@ -2,7 +2,8 @@ package com.example.article.application.service;
 
 import com.example.article.adaptor.port.in.dto.ArticleDto;
 import com.example.article.domain.Article;
-import com.example.article.mock.FakeArticlePersistenceAdapter;
+import com.example.article.mock.FakeArticlePersistenceAdaptor;
+import com.example.article.mock.FakeClockHolder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,14 +20,14 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ArticleServiceTest {
-
+    private static final LocalDateTime localDateTime = LocalDateTime.of(2023, 12, 25, 0, 0, 0);
     private ArticleService articleService;
 
     @BeforeEach
     void setUp() {
-        FakeArticlePersistenceAdapter fakeArticlePersistenceAdapter = new FakeArticlePersistenceAdapter();
-
-        this.articleService = new ArticleService(fakeArticlePersistenceAdapter, fakeArticlePersistenceAdapter);
+        FakeArticlePersistenceAdaptor fakeArticlePersistenceAdapter = new FakeArticlePersistenceAdaptor();
+        FakeClockHolder fakeClockHolder = new FakeClockHolder(localDateTime);
+        this.articleService = new ArticleService(fakeArticlePersistenceAdapter, fakeArticlePersistenceAdapter, fakeClockHolder);
 
         Article article1 = new Article.Builder()
                 .subject("subject1")
@@ -58,7 +59,7 @@ class ArticleServiceTest {
                 .hasFieldOrPropertyWithValue("subject", "subject")
                 .hasFieldOrPropertyWithValue("content", "content")
                 .hasFieldOrPropertyWithValue("username", "tester")
-                .hasFieldOrProperty("createdAt");
+                .hasFieldOrPropertyWithValue("createdAt", localDateTime);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -84,13 +85,17 @@ class ArticleServiceTest {
     void update() {
         Long articleId = 1L;
         ArticleDto.UpdateArticleRequest request
-                = new ArticleDto.UpdateArticleRequest(articleId, "updated-subject", "updated-content", "tester1");
+                = new ArticleDto.UpdateArticleRequest(articleId, "updated subject", "updated content", "tester1");
 
         Article result = this.articleService.update(request);
 
         assertThat(result)
                 .isNotNull()
-                .hasFieldOrPropertyWithValue("id", 1L);
+                .hasFieldOrPropertyWithValue("id", 1L)
+                .hasFieldOrPropertyWithValue("subject", "updated subject")
+                .hasFieldOrPropertyWithValue("content", "updated content")
+                .hasFieldOrPropertyWithValue("username", "tester1")
+                .hasFieldOrPropertyWithValue("modifiedAt", localDateTime);
     }
 
     @Test

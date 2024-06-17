@@ -8,11 +8,11 @@ import com.example.article.application.port.in.UpdateArticleUseCase;
 import com.example.article.application.port.out.CommandArticlePort;
 import com.example.article.application.port.out.QueryArticlePort;
 import com.example.article.domain.Article;
+import com.example.common.service.port.ClockHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Service
@@ -21,10 +21,12 @@ public class ArticleService implements CreateArticleUseCase, DeleteArticleUseCas
 
     private final CommandArticlePort commandArticlePort;
     private final QueryArticlePort queryArticlePort;
+    private final ClockHolder clockHolder;
 
-    public ArticleService(CommandArticlePort commandArticlePort, QueryArticlePort queryArticlePort) {
+    public ArticleService(CommandArticlePort commandArticlePort, QueryArticlePort queryArticlePort, ClockHolder clockHolder) {
         this.commandArticlePort = commandArticlePort;
         this.queryArticlePort = queryArticlePort;
+        this.clockHolder = clockHolder;
     }
 
     @Override
@@ -33,15 +35,13 @@ public class ArticleService implements CreateArticleUseCase, DeleteArticleUseCas
         Assert.hasLength(request.getContent(), "content should not empty");
         Assert.hasLength(request.getUsername(), "username should not empty");
 
-        LocalDateTime createdAt = LocalDateTime.now();
-        return commandArticlePort.create(Article.from(request, createdAt));
+        return commandArticlePort.create(Article.from(request, clockHolder));
     }
 
     @Override
     public Article update(ArticleDto.UpdateArticleRequest request) {
         Article article = queryArticlePort.getById(request.getId()).orElseThrow(NoSuchElementException::new);
-        LocalDateTime modifiedAt = LocalDateTime.now();
-        article = article.update(request, modifiedAt);
+        article = article.update(request, clockHolder);
         return commandArticlePort.update(article);
     }
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class ArticlePersistenceAdapter implements QueryArticlePort, CommandArticlePort {
+public class ArticlePersistenceAdaptor implements QueryArticlePort, CommandArticlePort {
 
     @Override
     public Article create(Article article) {
