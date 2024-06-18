@@ -1,6 +1,7 @@
 package com.example.article.domain;
 
 import com.example.article.adaptor.port.in.dto.ArticleDto;
+import com.example.common.exception.AccessDeniedException;
 import com.example.common.service.port.ClockHolder;
 
 import java.time.LocalDateTime;
@@ -34,8 +35,8 @@ public class Article {
     }
 
     public Article update(ArticleDto.UpdateArticleRequest request, ClockHolder clockHolder) {
-        if (!this.username.equals(request.getUsename())) {
-            throw new IllegalArgumentException();
+        if (!this.username.equals(request.getUsername())) {
+            throw new AccessDeniedException("수정하실 수 없습니다");
         }
 
         return new Builder()
