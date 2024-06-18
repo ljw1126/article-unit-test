@@ -4,6 +4,8 @@ import com.example.article.adaptor.port.in.dto.ArticleDto;
 import com.example.article.domain.Article;
 import com.example.article.mock.FakeArticlePersistenceAdaptor;
 import com.example.article.mock.FakeClockHolder;
+import com.example.common.exception.AccessDeniedException;
+import com.example.common.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,7 +13,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import static com.example.article.adaptor.port.in.dto.ArticleDto.CreateArticleRequest;
@@ -104,7 +105,7 @@ class ArticleServiceTest {
                 = new ArticleDto.UpdateArticleRequest(99L, "subject", "content", "tester");
 
         assertThatThrownBy(() -> articleService.update(request))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
@@ -113,7 +114,7 @@ class ArticleServiceTest {
                 = new ArticleDto.UpdateArticleRequest(1L, "subject", "content", "other username");
 
         assertThatThrownBy(() -> articleService.update(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AccessDeniedException.class);
     }
 
     @Test
@@ -136,6 +137,6 @@ class ArticleServiceTest {
     @Test
     void getById로_Article이없으면_예외를던진다() {
         assertThatThrownBy(() -> articleService.getById(99L))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 }

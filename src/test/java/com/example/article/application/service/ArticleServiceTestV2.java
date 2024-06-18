@@ -8,18 +8,16 @@ import com.example.common.exception.AccessDeniedException;
 import com.example.common.exception.ResourceNotFoundException;
 import com.example.common.service.port.ClockHolder;
 import com.example.domain.ArticleFixtures;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -33,20 +31,26 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.verify;
 
-@ExtendWith(MockitoExtension.class)
-class ArticleServiceTestV3 {
 
-    @InjectMocks
+class ArticleServiceTestV2 {
+
+
     private ArticleService articleService;
 
-    @Mock
     private CommandArticlePort commandArticlePort;
 
-    @Mock
     private QueryArticlePort queryArticlePort;
 
-    @Mock
     private ClockHolder clockHolder;
+
+    @BeforeEach
+    void setUp() {
+        commandArticlePort = Mockito.mock(CommandArticlePort.class);
+        queryArticlePort = Mockito.mock(QueryArticlePort.class);
+        clockHolder = Mockito.mock(ClockHolder.class);
+
+        articleService = new ArticleService(commandArticlePort, queryArticlePort, clockHolder);
+    }
 
     @Nested
     @DisplayName("Article 생성")
