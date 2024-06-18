@@ -1,0 +1,5 @@
+DELETE
+FROM `article`;
+
+ALTER TABLE `article`
+    ALTER COLUMN id RESTART WITH 1;
