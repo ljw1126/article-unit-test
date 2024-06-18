@@ -1,5 +1,6 @@
 package com.example.article.domain;
 
+import com.example.common.exception.AccessDeniedException;
 import com.example.domain.ArticleFixtures;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.BDDAssertions;
@@ -49,6 +50,6 @@ class ArticleTest {
         UpdateArticleRequest request = new UpdateArticleRequest(1L, "updated subject", "updated content", "other username");
 
         Assertions.assertThatThrownBy(() -> article.update(request, () -> null))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AccessDeniedException.class);
     }
 }
