@@ -4,6 +4,8 @@ import com.example.article.adaptor.port.in.dto.ArticleDto;
 import com.example.article.application.port.out.CommandArticlePort;
 import com.example.article.application.port.out.QueryArticlePort;
 import com.example.article.domain.Article;
+import com.example.common.exception.AccessDeniedException;
+import com.example.common.exception.ResourceNotFoundException;
 import com.example.common.service.port.ClockHolder;
 import com.example.domain.ArticleFixtures;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -135,7 +136,7 @@ class ArticleServiceTestV2 {
                     = new ArticleDto.UpdateArticleRequest(99L, "updated-subject", "updated-content", "tester1");
 
             assertThatThrownBy(() -> articleService.update(request))
-                    .isInstanceOf(NoSuchElementException.class);
+                    .isInstanceOf(ResourceNotFoundException.class);
         }
 
         @Test
@@ -148,7 +149,7 @@ class ArticleServiceTestV2 {
                     = new ArticleDto.UpdateArticleRequest(99L, "updated-subject", "updated-content", "other username");
 
             assertThatThrownBy(() -> articleService.update(request))
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(AccessDeniedException.class);
         }
     }
 
@@ -193,7 +194,7 @@ class ArticleServiceTestV2 {
                     .willReturn(Optional.empty());
 
             assertThatThrownBy(() -> articleService.getById(99L))
-                    .isInstanceOf(NoSuchElementException.class);
+                    .isInstanceOf(ResourceNotFoundException.class);
         }
     }
 }
