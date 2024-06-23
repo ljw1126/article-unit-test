@@ -6,6 +6,7 @@ import com.example.article.application.port.in.QueryArticleUseCase;
 import com.example.article.application.port.in.UpdateArticleUseCase;
 import com.example.article.domain.Article;
 import com.example.common.api.dto.CommandResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import static com.example.article.adaptor.port.in.dto.ArticleDto.UpdateArticleRe
 
 @RestController
 @RequestMapping("/article")
+@Tag(name = "Article", description = "Article API")
 public class ArticleController {
 
     private final CreateArticleUseCase createArticleUseCase;
